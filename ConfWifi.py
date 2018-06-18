@@ -6,5 +6,3 @@ os.system("sudo iwconfig wlan0 essid smurf key s:smurf1234")
 
 
 # avoir les droits de super utilisateur
-
-#Test
