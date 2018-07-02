@@ -35,49 +35,39 @@ def synchroBDD(userID):
 
     userID = str(userID)
 
+
     #For User
     cursorDebian.execute("select * from rm_user where us_id = %s ;", userID)
     # Fetch all row.
     data = cursorDebian.fetchall()
     #Add to local bdd
-    cursorLocal.execute("""insert into rm_user  values %s;""", data)
+    print(data[0])
+    cursorLocal.execute("insert into rm_user  values " + data[0])
     dbLocal.commit()
 
+
+    """
     #For Compartment
-    cursorDebian.execute("select * from rm_compartment where us_id = + %s ;", userID )
+    cursorDebian.execute("select * from rm_compartment where us_id = %s ;", userID )
     # Fetch all row.
     data = cursorDebian.fetchall()
     # Add all compartment to local bdd
     for row in data:
-        #for i in row:
-         #   print(i)
-        #row = str(row)
-        cursorLocal.execute("""insert into rm_compartment  values %s;""", row)
-        dbLocal.commit()
+        for i in row:
+            print(i)
+        print("\n\n\n\n")
+    """
 
-    #For Repertory
-    cursorDebian.execute("select * from rm_repertory where us_id = + %s ;", userID )
-    # Fetch all row.
-    data = cursorDebian.fetchall()
-    # Add all contact to local bdd
-    #for row in data:
-        #cursorLocal.execute("""insert into rm_repertory  values %s;""", row)
+        #cursorLocal.execute("""insert into rm_compartment  values %s;""", row)
         #dbLocal.commit()
 
-    # history
-    cursorDebian.execute("select * from rm_historic where us_id = + %s ;", userID )
-    # Fetch all row.
-    data = cursorDebian.fetchall()
-    # Add historic to local bdd
-    #for row in data:
-        #cursorLocal.execute("""insert into rm_historic  values %s;""", row)
-        #dbLocal.commit()
 
     return "Synchro";
 
 def resetBDD():
-    dbLocal = MySQLdb.connect("localhost", "usrRemMeds", "azerty", "remmeds")
+    dbLocal = MySQLdb.connect("localhost", "usrRemMeds", "azerty", "remmedsTest")
     cursor = dbLocal.cursor()
+    cursor.execute("DELETE FROM rm_comp_preset;")
     cursor.execute("DELETE FROM rm_compartment;")
     cursor.execute("DELETE FROM rm_connect;")
     cursor.execute("DELETE FROM rm_historic;")
@@ -91,17 +81,36 @@ def checkHour(numComp):
     date = datetime.datetime.now()
     hour = str(date.hour) # + ":" + str(date.minute)
     dbLocal = MySQLdb.connect("localhost", "usrRemMeds", "azerty", "remmeds")
-    result = dbLocal.cursor("select cpe_hour from rm_comp_preset where com_num = %s", numComp)
-    result.execute()
+    cursor = dbLocal.cursor()
 
-    #cursor.execute()
+    numComp = str(numComp)
+    cursor.execute("select com_id from rm_compartment where com_num = " + numComp)
 
-    if (hour == result):
+    idComp = cursor.fetchone()
+
+    idComp = str(idComp[0])
+
+    cursor.execute("select cpe_hour from rm_comp_preset where com_id = " + idComp)
+
+
+    result = cursor.fetchall()
+    bool = False
+
+    for row in result:
+        row = row[0]
+        print(row)
+        if(row == hour):
+            bool = True
+            break
+
+    if(bool):
         return True
     else:
         return False
 
-print(resetBDD())
 
-print(synchroBDD(1))
+#print(resetBDD())
+
+print(synchroBDD(2))
+
 

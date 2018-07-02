@@ -1,22 +1,22 @@
-import MySQLdb
-import datetime
+import RPi.GPIO as GPIO
+import time
 
-def synchro(userID):
-    dbDebian = MySQLdb.connect("localhost", "usrRemMeds", "azerty", "remmedsTest")
-    cursorDebian = dbDebian.cursor()
-    dbLocal = MySQLdb.connect("localhost", "usrRemMeds", "azerty", "remmeds")
-    cursorLocal = dbLocal.cursor()
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
 
 
+GPIO.setup(18,GPIO.OUT)
+print ("LED on")
+GPIO.output(18,GPIO.LOW)
+time.sleep(1)
+print ("LED off")
+GPIO.output(18,GPIO.HIGH)
 
 
-    cursorDebian.execute("select * from rm_user where us_id = %s ;", userID)
-    # Fetch all row.
-    data = cursorDebian.fetchall()
-    #Add to local bdd
-    cursorLocal.execute("""insert into rm_user  values %s;""", data)
-    dbLocal.commit()
-
-    dbLocal.close()
-
-synchro(1)
+GPIO.setup(23,GPIO.OUT)
+print ("LED on")
+GPIO.output(23,GPIO.LOW)
+time.sleep(1)
+print ("LED off")
+GPIO.output(23,GPIO.HIGH)
+GPIO.output(23,GPIO.HIGH)
